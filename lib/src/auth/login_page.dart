@@ -1,12 +1,10 @@
 import 'package:consumar_app/src/roro/printer_app/printer_app_page.dart';
-import 'package:consumar_app/src/roro/roro_cargarodante_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../services/auth/auth_service.dart';
 import '../../utils/constants.dart';
-import '../menu_principal_page.dart';
 import '../widgets/custom_snack_bar.dart';
 
 class LoginPantalla extends StatefulWidget {
@@ -67,7 +65,7 @@ class _LoginState extends State<LoginPantalla> {
       body: SafeArea(
         child: Stack(children: [
           Container(
-            color: kColorAzul,
+            color: Colors.black,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -75,7 +73,7 @@ class _LoginState extends State<LoginPantalla> {
                     child: Image.asset("assets/images/background.png",
                         fit: BoxFit.fill)),*/
                 Container(
-                  color: kColorAzul,
+                  color: Colors.black,
                 )
               ],
             ),
@@ -199,7 +197,7 @@ class _LoginState extends State<LoginPantalla> {
                                   hintStyle: TextStyle(
                                       color: const Color.fromARGB(
                                           255, 100, 100, 100)),
-                                  labelStyle: TextStyle(color: Colors.white),
+                                    labelStyle: TextStyle(color: Colors.white),
                                   /* prefixIcon: const Icon(
                                     Icons.vpn_key,
                                     color: Colors.blueAccent,

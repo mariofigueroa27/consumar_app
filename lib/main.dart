@@ -37,11 +37,11 @@ class MyApp extends StatelessWidget {
         },
         initialRoute: 'login',*/
 
-        home:  PrinterApp(jornada: 1, idUsuario: BigInt.parse(1.toString()), idServiceOrder: BigInt.parse(1.toString())),
+        home:  LoginPantalla(/*jornada: 1, idUsuario: BigInt.parse(1.toString()), idServiceOrder: BigInt.parse(1.toString())*/),
         builder: EasyLoading.init(),
         theme: ThemeData(
           appBarTheme: AppBarTheme(
-            backgroundColor: kColorAzul,
+            backgroundColor: kColorAzul2,
           ),
         ),
       ),

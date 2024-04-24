@@ -5,16 +5,11 @@ import 'package:consumar_app/models/vehicle.dart';
 import 'package:consumar_app/src/roro/printer_app/reetiquetado_print_page.dart';
 //import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../models/roro/printer_app/create_sql_lite_printer_app.dart';
 import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
 import '../../../services/roro/printer_app/printer_app_service.dart';
-import '../../../utils/check_internet_connection.dart';
-import '../../../utils/connection_status_cubit.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/roro/sqliteBD/db_printer_app.dart';
-
+//import '../../../utils/roro/sqliteBD/db_printer_app.dart';
 
 class PrinterApp extends StatefulWidget {
   const PrinterApp(
@@ -47,6 +42,8 @@ List<Travel> travelList = [];
 
 List<Vehicle> vehicleList = [];
 
+List<Vehicle> vehicleEtiquetadoList = [];
+
 String idShip = "";
 
 String idTravel = "";
@@ -56,12 +53,27 @@ class _PrinterAppState extends State<PrinterApp>
   final controllerSearchChasis = TextEditingController();
 
   final controllerSearchChasisEtiquetado = TextEditingController();
-  DbPrinterApp dbPrinterApp = DbPrinterApp();
+  // DbPrinterApp dbPrinterApp = DbPrinterApp();
 
   PrinterAppService printerAppService = PrinterAppService();
 
-    Ship? _selectedShip; // Variable para almacenar el barco seleccionado
-    Travel? _selectedTravel; // Variable para almacenar el barco seleccionado
+  Ship? _selectedShip; // Variable para almacenar el barco seleccionado
+  Travel? _selectedTravel; // Variable para almacenar el barco seleccionado
+
+  /*//Metodo para obtener la lista en local de los Vehiculos Etiquetados
+  obtenerListadoPrinterAppEtiquetado() async {
+    createSqlLitePrinterApp =
+        await dbPrinterApp.getSqlLitePrinterAppEtiquetados();
+
+    setState(() {
+      allDREtiqutado = createSqlLitePrinterApp;
+    });
+  }
+  */
+  //Metodo para hacer la carga general de vehiculos etiquetados a la base de datos (roro_printer_etiquetado)
+  /* cargarListaGeneralPrinterAppEtiquetados() {
+    printerAppService.createPrinterAppList(createSqlLitePrinterApp);
+  }*/
 
   //Obtener la lista en local de vehiculos sin etiquetar cargado previamente de la BD
   cargarListaBarcos() async {
@@ -79,6 +91,7 @@ class _PrinterAppState extends State<PrinterApp>
     setState(() {
       travelList = value;
     });
+    print(travelList.length);
   }
 
   //Obtener la lista en local de vehiculos sin etiquetar cargado previamente de la BD
@@ -90,35 +103,6 @@ class _PrinterAppState extends State<PrinterApp>
     });
   }
 
-  //Obtener la lista en local de vehiculos sin etiquetar cargado previamente de la BD
-  cargarListaPrinterAppPendiente() async {
-    List<InsertPrinterAppPendientes> value =
-        await dbPrinterApp.listPrinterPendientesData();
-
-    setState(() {
-      getPrinterAppPendientes = value;
-      allDR = getPrinterAppPendientes;
-    });
-  }
-
-  //Metodo para obtener la lista en local de los Vehiculos Etiquetados
-  obtenerListadoPrinterAppEtiquetado() async {
-    createSqlLitePrinterApp =
-        await dbPrinterApp.getSqlLitePrinterAppEtiquetados();
-
-    setState(() {
-      allDREtiqutado = createSqlLitePrinterApp;
-    });
-  }
-
-
-
-
-  //Metodo para hacer la carga general de vehiculos etiquetados a la base de datos (roro_printer_etiquetado)
-  /* cargarListaGeneralPrinterAppEtiquetados() {
-    printerAppService.createPrinterAppList(createSqlLitePrinterApp);
-  }*/
-
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
@@ -126,8 +110,6 @@ class _PrinterAppState extends State<PrinterApp>
     // TODO: implement initState
     super.initState();
     cargarListaBarcos();
-    cargarListaPrinterAppPendiente();
-    obtenerListadoPrinterAppEtiquetado();
   }
 
   @override
@@ -177,7 +159,7 @@ class _PrinterAppState extends State<PrinterApp>
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              getPrinterAppPendientes.length.toString(),
+                              vehicleList.length.toString(),
                               style: TextStyle(color: Colors.black),
                             ),
                           )),
@@ -199,7 +181,7 @@ class _PrinterAppState extends State<PrinterApp>
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            createSqlLitePrinterApp.length.toString(),
+                            vehicleEtiquetadoList.length.toString(),
                             style: TextStyle(color: Colors.black),
                           ),
                         )),
@@ -248,18 +230,6 @@ class _PrinterAppState extends State<PrinterApp>
                       SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: DataTable(
-                           // dividerThickness: 3,
-                           /* border: TableBorder.symmetric(
-                                inside: BorderSide(
-                                    width: 1, color: Colors.grey.shade200)),*/
-                         /*   decoration: BoxDecoration(
-                              border: Border.all(color: colors),
-                              borderRadius: BorderRadius.circular(10),
-                            ),*/
-                           /* headingTextStyle: TextStyle(
-                                fontWeight: FontWeight.bold, color: Colors.white),*/
-                          /*  dataRowColor: MaterialStateProperty.resolveWith(
-                                _getDataRowColor),*/
                             columns: const <DataColumn>[
                               DataColumn(
                                 label: Text(""),
@@ -270,32 +240,49 @@ class _PrinterAppState extends State<PrinterApp>
                             ],
                             rows: vehicleList
                                 .map(((e) => DataRow(
-                                        onLongPress: () {
-                                          /*Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EtiquetadoPrinterApp(
-                                                          jornada:
-                                                              widget.jornada,
-                                                          idUsuario:
-                                                              widget.idUsuario,
-                                                          idServiceOrder: widget
-                                                              .idServiceOrder,
-                                                          idPendientes: e
-                                                              .idPrinterAppPendientes!)));*/
-                                        },
+                                        onLongPress: () {},
                                         cells: <DataCell>[
-                                          DataCell(Text(e.chassis.toString(),style: TextStyle(color: Colors.white))),
+                                          DataCell(Text(e.chassis.toString(),
+                                              style: TextStyle(
+                                                  color: Colors.white))),
                                           DataCell(
                                             ElevatedButton(
                                               onPressed: () {
+                                                // Encuentra el vehículo seleccionado en la lista original
+                                                Vehicle selectedVehicle =
+                                                    vehicleList.firstWhere(
+                                                        (vehicle) =>
+                                                            vehicle.id == e.id);
+
+// Crea un nuevo objeto Vehicle con solo el ID y el chasis
+                                                Vehicle simplifiedVehicle =
+                                                    Vehicle(
+                                                        id: selectedVehicle.id,
+                                                        chassis: selectedVehicle
+                                                            .chassis,
+                                                        operation: '',
+                                                        tradeMark: '',
+                                                        detail: '',
+                                                        travelId: '',
+                                                        serviceOrderId: '');
+
+// Agrega este nuevo objeto a la lista vehicleEtiquetadoList
+                                                vehicleEtiquetadoList
+                                                    .add(simplifiedVehicle);
+
+                                                vehicleList.removeWhere(
+                                                    (vehicle) =>
+                                                        vehicle.id == e.id);
+                                                setState(() {
+                                                  vehicleList;
+                                                  vehicleEtiquetadoList;
+                                                });
                                                 // Aquí puedes manejar la acción de etiquetar
                                               },
                                               style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all<
-                                                        Color>(Colors.blue),
+                                                        Color>(kColorCeleste2),
                                                 shape: MaterialStateProperty
                                                     .all<OutlinedBorder>(
                                                   RoundedRectangleBorder(
@@ -324,54 +311,6 @@ class _PrinterAppState extends State<PrinterApp>
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(children: [
-                    BlocProvider(
-                      create: (context) => ConnectionStatusCubit(),
-                      child:
-                          BlocBuilder<ConnectionStatusCubit, ConnectionStatus>(
-                        builder: (context, status) {
-                          return Visibility(
-                              visible: status != ConnectionStatus.online,
-                              child: Container(
-                                padding: const EdgeInsets.all(16),
-                                height: 60,
-                                color: Colors.red,
-                                child: const Row(
-                                  children: [
-                                    Icon(Icons.wifi_off),
-                                    SizedBox(
-                                      width: 8, 
-                                    ),
-                                    Text("SIN CONEXIÓN A INTERNET")
-                                  ],
-                                ),
-                              ));
-                        },
-                      ),
-                    ),
-                    BlocProvider(
-                      create: (context) => ConnectionStatusCubit(),
-                      child:
-                          BlocBuilder<ConnectionStatusCubit, ConnectionStatus>(
-                        builder: (context, status) {
-                          return Visibility(
-                              visible: status == ConnectionStatus.online,
-                              child: Container(
-                                padding: const EdgeInsets.all(16),
-                                height: 60,
-                                color: Colors.green,
-                                child: const Row(
-                                  children: [
-                                    Icon(Icons.cell_wifi),
-                                    SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text("CON CONEXIÓN A INTERNET")
-                                  ],
-                                ),
-                              ));
-                        },
-                      ),
-                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -411,18 +350,8 @@ class _PrinterAppState extends State<PrinterApp>
                           ),
                           headingTextStyle: TextStyle(
                               fontWeight: FontWeight.bold, color: kColorAzul),
-                          /* headingRowColor: MaterialStateColor.resolveWith(
-                            (states) {
-                              return kColorAzul;
-                            },
-                          ), */
                           dataRowColor: MaterialStateProperty.resolveWith(
                               _getDataRowColor),
-                          /* dataRowColor: MaterialStateColor.resolveWith(
-                        (Set<MaterialState> states) =>
-                            states.contains(MaterialState.selected)
-                                ? kColorCeleste
-                                : Color.fromARGB(100, 215, 217, 219)), */
                           columns: const <DataColumn>[
                             DataColumn(
                               label: Text("Chassis"),
@@ -431,30 +360,45 @@ class _PrinterAppState extends State<PrinterApp>
                               label: Text("Estado"),
                             ),
                           ],
-                          rows: allDREtiqutado
+                          rows: vehicleEtiquetadoList
                               .map(((e) => DataRow(cells: <DataCell>[
                                     DataCell(
-                                        Text(e.idPrEtiquetados.toString())),
-                                    DataCell(Text(e.chasis!)),
-                                    DataCell(Text(e.marca!)),
-                                    DataCell(Text(e.modelo!)),
-                                    DataCell(Text(e.detalle!)),
-                                    DataCell(Text(e.estado!)),
-                                    DataCell(IconButton(
-                                      icon: const Icon(
-                                        Icons.qr_code,
+                                      Text(
+                                        e.chassis,
+                                        style: TextStyle(color: Colors.white),
                                       ),
-                                      onPressed: () {
-                                        dialogoReetiquetado(context, e);
-                                      },
-                                    ))
+                                    ),
+                                    //DataCell(Text(e.estado!)),
+                                    DataCell(
+                                      ElevatedButton(
+                                        onPressed: () {},
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  kColorNaranja),
+                                          shape: MaterialStateProperty.all<
+                                              OutlinedBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(
+                                                  10.0), // Define el radio del borde
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Etiquetado',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
                                   ])))
                               .toList(),
                         )),
                     const SizedBox(
                       height: 20,
                     ),
-                    BlocProvider(
+                    /*BlocProvider(
                       create: (context) => ConnectionStatusCubit(),
                       child:
                           BlocBuilder<ConnectionStatusCubit, ConnectionStatus>(
@@ -510,14 +454,20 @@ class _PrinterAppState extends State<PrinterApp>
                                 height: 50.0,
                                 color: kColorNaranja,
                                 onPressed: () async {
+                                  List<int> idList = vehicleEtiquetadoList
+                                      .map<int>(
+                                          (vehicle) => int.parse(vehicle.id))
+                                      .toList();
+
+                                  await printerAppService
+                                      .actualizarVehiculos(idList);
+
                                   //cargarListaGeneralPrinterAppEtiquetados();
-                                  await dbPrinterApp
-                                      .clearTablePrinterAppEtiquetados();
+                                  /*  await dbPrinterApp
+                                      .clearTablePrinterAppEtiquetados();*/
                                   setState(() {
-                                    cargarListaPrinterAppPendiente();
-                                    allDR;
-                                    obtenerListadoPrinterAppEtiquetado();
-                                    createSqlLitePrinterApp.clear();
+                                    vehicleEtiquetadoList.clear();
+                                    idList.clear();
                                   });
                                 },
                                 child: const Text(
@@ -530,6 +480,37 @@ class _PrinterAppState extends State<PrinterApp>
                                 ),
                               ));
                         },
+                      ),
+                    ),*/
+                    MaterialButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      minWidth: double.infinity,
+                      height: 50.0,
+                      color: kColorNaranja,
+                      onPressed: () async {
+                        List<int> idList = vehicleEtiquetadoList
+                            .map<int>((vehicle) => int.parse(vehicle.id))
+                            .toList();
+
+                        await printerAppService.actualizarVehiculos(idList);
+
+                        //cargarListaGeneralPrinterAppEtiquetados();
+                        /*  await dbPrinterApp
+                                      .clearTablePrinterAppEtiquetados();*/
+                        setState(() {
+                          vehicleEtiquetadoList.clear();
+                          idList.clear();
+                        });
+                      },
+                      child: const Text(
+                        "CARGAR LISTA",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5),
                       ),
                     ),
                     const SizedBox(
@@ -546,8 +527,6 @@ class _PrinterAppState extends State<PrinterApp>
           children: [
             FloatingActionButton(
               onPressed: () {
-                cargarListaPrinterAppPendiente();
-                obtenerListadoPrinterAppEtiquetado();
                 setState(() {
                   getPrinterAppPendientes;
                   createSqlLitePrinterApp;
@@ -585,9 +564,7 @@ class _PrinterAppState extends State<PrinterApp>
                                 DropdownButton<Ship>(
                                   isExpanded: true,
                                   hint: Text('Seleccione Nave'),
-                                  value:
-                                      _selectedShip, // Establece el valor seleccionado
-                                  // Rellena los items del menú desplegable con las naves obtenidas
+                                  value: _selectedShip,
                                   items: shipList.map((Ship ship) {
                                     return DropdownMenuItem<Ship>(
                                       value: ship,
@@ -596,17 +573,13 @@ class _PrinterAppState extends State<PrinterApp>
                                   }).toList(),
                                   onChanged: (Ship? newValue) {
                                     setState(() {
-                                      _selectedShip =
-                                          newValue; // Actualiza el barco seleccionado
+                                      _selectedShip = newValue;
+                                      idShip = newValue!.id;
+                                      print(idShip);
                                     });
-                                    // Aquí puedes manejar el cambio de selección de la nave
-                                    // Por ejemplo, puedes llamar a otro método y pasar el ID del barco seleccionado
-                                    if (_selectedShip != null) {
-                                     setState(() {
-                                      idShip =
-                                          newValue!.id; // Actualiza el barco seleccionado
-                                    });
-                                    }
+                                    // Llamamos a setState para forzar la reconstrucción del diálogo
+                                    setState(() {});
+                                    // Cargamos la lista de viajes después de seleccionar un barco
                                     cargarListaViaje();
                                   },
                                 ),
@@ -614,9 +587,7 @@ class _PrinterAppState extends State<PrinterApp>
                                 DropdownButton<Travel>(
                                   isExpanded: true,
                                   hint: Text('Seleccione Viaje'),
-                                  value:
-                                      _selectedTravel, // Establece el valor seleccionado
-                                  // Rellena los items del menú desplegable con las naves obtenidas
+                                  value: _selectedTravel,
                                   items: travelList.map((Travel travel) {
                                     return DropdownMenuItem<Travel>(
                                       value: travel,
@@ -625,20 +596,12 @@ class _PrinterAppState extends State<PrinterApp>
                                   }).toList(),
                                   onChanged: (Travel? newValue) {
                                     setState(() {
-                                      _selectedTravel =
-                                          newValue; // Actualiza el barco seleccionado
+                                      _selectedTravel = newValue;
+                                      idTravel = newValue!.id;
                                     });
-                                    // Aquí puedes manejar el cambio de selección de la nave
-                                    // Por ejemplo, puedes llamar a otro método y pasar el ID del barco seleccionado
-                                   if (_selectedTravel != null) {
-                                     setState(() {
-                                      idTravel =
-                                          newValue!.id; // Actualiza el barco seleccionado
-                                    });
-                                    }
                                   },
                                 ),
-   ],
+                              ],
                             ),
                           ),
                           actions: [
@@ -701,49 +664,9 @@ class _PrinterAppState extends State<PrinterApp>
     });
   }
 
-  void searchMarca(String query) {
-    final suggestion = getPrinterAppPendientes.where((drList) {
-      final listDR = drList.marca!.toLowerCase();
-      final input = query.toLowerCase();
-      return listDR.contains(input);
-    }).toList();
-
-    setState(() => allDR = suggestion);
-  }
-
-  void searchModelo(String query) {
-    final suggestion = getPrinterAppPendientes.where((drList) {
-      final listDR = drList.modelo!.toLowerCase();
-      final input = query.toLowerCase();
-      return listDR.contains(input);
-    }).toList();
-
-    setState(() => allDR = suggestion);
-  }
-
   void searchChassisEtiquetado(String query) {
     final suggestion = createSqlLitePrinterApp.where((drList) {
       final listDR = drList.chasis!.toLowerCase();
-      final input = query.toLowerCase();
-      return listDR.contains(input);
-    }).toList();
-
-    setState(() => allDREtiqutado = suggestion);
-  }
-
-  void searchMarcaEtiquetado(String query) {
-    final suggestion = createSqlLitePrinterApp.where((drList) {
-      final listDR = drList.marca!.toLowerCase();
-      final input = query.toLowerCase();
-      return listDR.contains(input);
-    }).toList();
-
-    setState(() => allDREtiqutado = suggestion);
-  }
-
-  void searchModeloEtiquetado(String query) {
-    final suggestion = createSqlLitePrinterApp.where((drList) {
-      final listDR = drList.modelo!.toLowerCase();
       final input = query.toLowerCase();
       return listDR.contains(input);
     }).toList();

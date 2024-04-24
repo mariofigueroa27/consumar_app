@@ -40,4 +40,22 @@ class PrinterAppService {
       throw Exception('Failed to load vehicles');
     }
   }
+
+  Future<void> actualizarVehiculos(List<int> ids) async {
+    final url = Uri.parse('http://localhost:3000/api/actualizar-vehiculos');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({'ids': ids});
+
+    try {
+      final response = await http.put(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        print('Registros actualizados correctamente');
+      } else {
+        print('Error al actualizar los registros: ${response.reasonPhrase}');
+      }
+    } catch (error) {
+      print('Error al realizar la solicitud: $error');
+    }
+  }
+
 }
