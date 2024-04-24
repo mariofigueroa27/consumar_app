@@ -28,7 +28,7 @@ class _PrinterAppListadoState extends State<PrinterAppListado> {
 
   int vhEtiquetados = 0;
 
-  getVwPrinterAppListByIdServiceOrder() async {
+  /*getVwPrinterAppListByIdServiceOrder() async {
     List<VwPrinterAppListByIdServiceOrder> value = await printerAppService
         .getPrinterAppListByIdServiceOrder(widget.idServiceOrder);
 
@@ -37,9 +37,9 @@ class _PrinterAppListadoState extends State<PrinterAppListado> {
       cantidadTotal = vwPrinterAppListByIdServiceOrder.length;
     });
     //print(vwPrinterAppListByIdServiceOrder.length);
-  }
+  }*/
 
-  getCountVehiculosEtiquetadosByServiceOrder() async {
+ /* getCountVehiculosEtiquetadosByServiceOrder() async {
     vwGetCountVehiculosEtiquetadosByServiceOrder = await printerAppService
         .getCountVehiculosEtiquetadosByServiceOrder(widget.idServiceOrder);
 
@@ -48,14 +48,14 @@ class _PrinterAppListadoState extends State<PrinterAppListado> {
           .numeroVehiculosEtiquetado!;
     });
     //print(vwPrinterAppListByIdServiceOrder.length);
-  }
+  }*/
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getVwPrinterAppListByIdServiceOrder();
-    getCountVehiculosEtiquetadosByServiceOrder();
+   // getVwPrinterAppListByIdServiceOrder();
+    //getCountVehiculosEtiquetadosByServiceOrder();
   }
 
   @override
@@ -159,9 +159,9 @@ class _PrinterAppListadoState extends State<PrinterAppListado> {
                                       color: Colors.grey,
                                     ),
                                     onPressed: () {
-                                      printerAppService.delecteLogicOperacion(
+                                     /* printerAppService.delecteLogicOperacion(
                                           BigInt.parse(
-                                              e.idRoroOperacion.toString()));
+                                              e.idRoroOperacion.toString()));*/
                                     },
                                   ),
                                 ),

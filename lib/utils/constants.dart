@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 Color kColorNaranja = const Color.fromRGBO(255, 127, 17, 1);
-Color kColorAzul = const Color.fromRGBO(0, 0, 85, 1);
+Color kColorAzul = Color.fromARGB(255, 67, 139, 255);
 Color kColorCeleste = const Color.fromRGBO(0, 255, 208, 1);
-Color kColorCeleste2 = const Color.fromARGB(255, 11, 169, 241);
+Color kColorCeleste2 = Color.fromARGB(255, 67, 139, 255);
+Color kColorAzul2 = Color.fromARGB(255, 22, 22, 22);
 
 Color kColorBlanco = const Color.fromARGB(255, 255, 255, 255);
 

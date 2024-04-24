@@ -1,3 +1,5 @@
+import 'package:consumar_app/src/roro/printer_app/printer_app_page.dart';
+import 'package:consumar_app/src/roro/roro_cargarodante_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -43,8 +45,8 @@ class _LoginState extends State<LoginPantalla> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => MenuPrincipal(
-                userAuthenticatedModel: userAuthenticatedModel,
+              builder: (context) => PrinterApp(jornada: 1, idUsuario: BigInt.parse(1.toString()), idServiceOrder: BigInt.parse(1.toString()),
+               
               ),
             ),
           );
@@ -64,13 +66,19 @@ class _LoginState extends State<LoginPantalla> {
       // propiedad de orden
       body: SafeArea(
         child: Stack(children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                  child: Image.asset("assets/images/background.png",
-                      fit: BoxFit.fill)),
-            ],
+          Container(
+            color: kColorAzul,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                /*Expanded(
+                    child: Image.asset("assets/images/background.png",
+                        fit: BoxFit.fill)),*/
+                Container(
+                  color: kColorAzul,
+                )
+              ],
+            ),
           ),
           SingleChildScrollView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -99,14 +107,14 @@ class _LoginState extends State<LoginPantalla> {
                         maxWidth: 500,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color.fromARGB(255, 17, 17, 17),
                         boxShadow: const [
                           BoxShadow(
-                              color: Colors.white70,
+                              //color: Colors.white70,
                               offset: Offset(0, 5),
                               blurRadius: 5.0),
                           BoxShadow(
-                              color: Colors.white70,
+                              // color: Colors.white70,
                               offset: Offset(0, -5),
                               blurRadius: 5),
                         ],
@@ -117,46 +125,54 @@ class _LoginState extends State<LoginPantalla> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              // ingresar texto
-                              'Inicio de sesión',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.bold,
-                                color: kColorAzul,
+                            Center(
+                              child: Text(
+                                // ingresar texto
+                                'Iniciar Sesión',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.bold,
+                                  color: kColorBlanco,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
                             ),
                             const SizedBox(
                               //caja de texto
                               height: 30,
                             ),
                             TextFormField(
-                                enableInteractiveSelection: false,
-                                autofocus: true,
-                                controller: loginController,
-                                decoration: InputDecoration(
-                                  hintText: 'Ingrese su usuario',
-                                  labelText: 'Usuario',
-                                  prefixIcon: const Icon(
-                                    Icons.person,
+                              enableInteractiveSelection: false,
+                              autofocus: true,
+                              controller: loginController,
+                              style: TextStyle(
+                                  color: Colors
+                                      .white), // Color blanco para el texto ingresado
+                              decoration: InputDecoration(
+                                hintText: 'ej. ConsumarUser123',
+                                labelText: 'Nombre de usuario',
+                                hintStyle: TextStyle(
+                                  color: const Color.fromARGB(255, 100, 100,
+                                      100), // Color medio gris para el texto de sugerencia
+                                ),
+                                labelStyle: TextStyle(color: Colors.white),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
                                     color: Colors.blueAccent,
-                                  ),
-                                  //suffixIcon: const Icon(Icons.verified_user),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(
-                                        color: Colors.blueAccent, width: 2.0),
+                                    width: 2.0,
                                   ),
                                 ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Por favor, Ingrese su usuario';
-                                  }
-                                  user = value;
-                                  return null;
-                                }),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor, Ingrese su usuario';
+                                }
+                                user = value;
+                                return null;
+                              },
+                            ),
                             const SizedBox(
                               height: 20,
                             ),
@@ -164,7 +180,9 @@ class _LoginState extends State<LoginPantalla> {
                                 enableInteractiveSelection: false,
                                 autofocus: true,
                                 obscureText: hidePassword,
-                                controller: passwordController,
+                                controller: passwordController, style: TextStyle(
+                                  color: Colors
+                                      .white), 
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -176,12 +194,16 @@ class _LoginState extends State<LoginPantalla> {
                                       width: 2.0,
                                     ),
                                   ),
-                                  hintText: 'Ingrese su contraseña',
+                                  hintText: 'consumar123',
                                   labelText: 'Contraseña',
-                                  prefixIcon: const Icon(
+                                  hintStyle: TextStyle(
+                                      color: const Color.fromARGB(
+                                          255, 100, 100, 100)),
+                                  labelStyle: TextStyle(color: Colors.white),
+                                  /* prefixIcon: const Icon(
                                     Icons.vpn_key,
                                     color: Colors.blueAccent,
-                                  ),
+                                  ),*/
                                   suffixIcon: IconButton(
                                     icon: hidePassword
                                         ? const Icon(
@@ -207,41 +229,39 @@ class _LoginState extends State<LoginPantalla> {
                             const SizedBox(
                               height: 40,
                             ),
+                            Center(
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 700,
+                                ),
+                                child: MaterialButton(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  minWidth: double.infinity,
+                                  height: 50.0,
+                                  color: kColorCeleste2,
+                                  onPressed: () async {
+                                    EasyLoading.show(
+                                        indicator:
+                                            const CircularProgressIndicator(),
+                                        status: "Iniciando sesión",
+                                        maskType: EasyLoadingMaskType.black);
+                                    await getLogin();
+                                    EasyLoading.dismiss();
+                                  },
+                                  child: const Text(
+                                    "INGRESAR",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.5),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 70,
-                  ),
-                  Center(
-                    child: Container(
-                      constraints: const BoxConstraints(
-                        maxWidth: 300,
-                      ),
-                      child: MaterialButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        minWidth: double.infinity,
-                        height: 50.0,
-                        color: kColorNaranja,
-                        onPressed: () async {
-                          EasyLoading.show(
-                              indicator: const CircularProgressIndicator(),
-                              status: "Iniciando sesión",
-                              maskType: EasyLoadingMaskType.black);
-                          await getLogin();
-                          EasyLoading.dismiss();
-                        },
-                        child: const Text(
-                          "INICIAR SESIÓN",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.5),
                         ),
                       ),
                     ),

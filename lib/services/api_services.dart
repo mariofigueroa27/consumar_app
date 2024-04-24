@@ -36,14 +36,16 @@ String urlGetShipAndTravelByIdOrderService =
     "${urlApiBase}ServiceOrder/getShipAndTravelByIdServiceOrder/";
 
 /*--------------- Urls Printer App ---------------*/
+String urlApiBase3 = "http://localhost:3000/api";
+
 final urlCreateSpPrinterAppList =
-    Uri.parse("${urlApiBase}PrinterApp/createSpPrinterAppList");
+    Uri.parse("${urlApiBase3}/createSpPrinterAppList");
 
-String urlGetPrinterAppListByIdServiceOrder =
-    "${urlApiBase}PrinterApp/getVwPrinterAppListByIdServiceOrder?idServiceOrder=";
+String urlGetListVehicleByTravel =
+    "${urlApiBase}/getVwPrinterAppListByIdServiceOrder?idServiceOrder=";
 
-String urlGetVehicleDataByIdServiceOrderDescarga =
-    "${urlApiBase}PrinterApp/getVwVehicleDataByIdServiceOrderDescarga?idServiceOrder=";
+String urlGetListShip =
+    "${urlApiBase}/ships";
 
 String urlGetVehicleDataByIdServiceOrderEmbarque =
     "${urlApiBase}PrinterApp/getVwVehicleDataByIdServiceOrderEmbarque?idServiceOrder=";

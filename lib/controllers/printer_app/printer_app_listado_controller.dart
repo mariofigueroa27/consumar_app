@@ -12,19 +12,19 @@ class PrinterAppListadoController extends ChangeNotifier {
 
   List<VwPrinterAppListByIdServiceOrder> vwPrinterAppListByIdServiceOrder = [];
 
-  Future<void> getVwPrinterAppListByIdServiceOrder(
+ /* Future<void> getVwPrinterAppListByIdServiceOrder(
       BigInt idServiceOrder) async {
     vwPrinterAppListByIdServiceOrder = await printerAppService
         .getPrinterAppListByIdServiceOrder(idServiceOrder);
 
     notifyListeners();
-  }
+  }*/
 
-  Future<void> getCountVehiculosEtiquetadosByServiceOrder(
+ /* Future<void> getCountVehiculosEtiquetadosByServiceOrder(
       BigInt idServiceOrder) async {
     vwGetCountVehiculosEtiquetadosByServiceOrder = await printerAppService
         .getCountVehiculosEtiquetadosByServiceOrder(idServiceOrder);
 
     notifyListeners();
-  }
+  }*/
 }
