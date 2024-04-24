@@ -339,7 +339,7 @@ class _PrinterAppState extends State<PrinterApp>
                                   children: [
                                     Icon(Icons.wifi_off),
                                     SizedBox(
-                                      width: 8,
+                                      width: 8, 
                                     ),
                                     Text("SIN CONEXIÓN A INTERNET")
                                   ],
