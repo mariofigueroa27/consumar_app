@@ -1,4 +1,4 @@
-import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
+//import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
@@ -146,10 +146,10 @@ class _ReetiquetadoPrintPrintPageState extends State<ReetiquetadoPrintPage> {
                       onPressed: connected ? this.disconnect : null,
                       child: Text("Disconnect"),
                     ),
-                    ElevatedButton(
+                  /*  ElevatedButton(
                       onPressed: connected ? this.printTest : null,
                       child: Text("Test"),
-                    ),
+                    ),*/
                   ],
                 ),
                 Container(
@@ -311,7 +311,7 @@ class _ReetiquetadoPrintPrintPageState extends State<ReetiquetadoPrintPage> {
     print("status disconnect $status");
   }
 
-  Future<void> printTest() async {
+ /* Future<void> printTest() async {
     bool conexionStatus = await PrintBluetoothThermal.connectionStatus;
     //print("connection status: $conexionStatus");
     if (conexionStatus) {
@@ -321,7 +321,7 @@ class _ReetiquetadoPrintPrintPageState extends State<ReetiquetadoPrintPage> {
     } else {
       //no conectado, reconecte
     }
-  }
+  }*/
 
   Future<void> printString() async {
     bool conexionStatus = await PrintBluetoothThermal.connectionStatus;
@@ -342,7 +342,7 @@ class _ReetiquetadoPrintPrintPageState extends State<ReetiquetadoPrintPage> {
     }
   }
 
-  Future<List<int>> testTicket() async {
+  /*Future<List<int>> testTicket() async {
     List<int> bytes = [];
     // Using default profile
     final profile = await CapabilityProfile.load();
@@ -379,7 +379,7 @@ class _ReetiquetadoPrintPrintPageState extends State<ReetiquetadoPrintPage> {
     bytes += generator.feed(2);
     //bytes += generator.cut();
     return bytes;
-  }
+  }*/
 
   Future<void> printWithoutPackage() async {
     //impresion sin paquete solo de PrintBluetoothTermal

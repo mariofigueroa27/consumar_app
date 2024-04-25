@@ -6,7 +6,7 @@ import 'package:consumar_app/models/vehicle.dart';
 import 'package:http/http.dart' as http;
 
 class PrinterAppService {
-  static const String baseUrl = 'http://localhost:3000/api';
+  static const String baseUrl = 'https://newbackprinter.azurewebsites.net/api';
 
   // Método para obtener la lista de naves espaciales
   Future<List<Ship>> getShips() async {
@@ -42,7 +42,7 @@ class PrinterAppService {
   }
 
   Future<void> actualizarVehiculos(List<int> ids) async {
-    final url = Uri.parse('http://localhost:3000/api/actualizar-vehiculos');
+    final url = Uri.parse('https://newbackprinter.azurewebsites.net/api/actualizar-vehiculos');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({'ids': ids});
 

@@ -5,11 +5,9 @@ import 'package:consumar_app/src/roro/printer_app/print_page.dart';
 import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 
-import '../../../models/roro/printer_app/create_sql_lite_printer_app.dart';
 import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/roro/sqliteBD/db_printer_app.dart';
-import 'printer_app_page.dart';
 
 class EtiquetadoPrinterApp extends StatefulWidget {
   const EtiquetadoPrinterApp(
@@ -17,13 +15,15 @@ class EtiquetadoPrinterApp extends StatefulWidget {
       required this.jornada,
       required this.idUsuario,
       required this.idServiceOrder,
-      required this.idPendientes})
+      required this.idPendientes,
+      required this.chassis})
       : super(key: key);
 
   final int jornada;
   final BigInt idUsuario;
   final BigInt idServiceOrder;
   final int idPendientes;
+  final String chassis;
 
   @override
   State<EtiquetadoPrinterApp> createState() => _EtiquetadoPrinterAppState();
@@ -38,30 +38,17 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
 
   final codigoQr = imageFromAssetBundle('assets/images/qrlogo.png');
 
-  String textoQr = "QR ID VEHICLE";
-
   DbPrinterApp dbPrinterApp = DbPrinterApp();
   InsertPrinterAppPendientes insertPrinterAppPendientes =
       InsertPrinterAppPendientes();
 
-  getPendienteByID() async {
-    insertPrinterAppPendientes =
-        await dbPrinterApp.getPrinterAppPendientesById(widget.idPendientes);
-    // //print(insertPrinterAppPendientes.idPrinterAppPendientes);
-    // //print(insertPrinterAppPendientes.estado);
-    qrController.text = insertPrinterAppPendientes.idVehiculo.toString();
-    setState(() {
-      textoQr = qrController.text;
-    });
-    chasisController.text = insertPrinterAppPendientes.chasis!;
-    marcaController.text = insertPrinterAppPendientes.marca!;
-    modeloController.text = insertPrinterAppPendientes.modelo!;
-    detalleController.text = insertPrinterAppPendientes.detalle!;
-  }
+  /* getPendienteByID() async {
+    chasisController.text = widget.chassis;
+  }*/
 
   //Metodo para etiquetar los vehiculos
 
-  createPrinterAppEtiquetado() {
+  /*createPrinterAppEtiquetado() {
     dbPrinterApp.createPrinterAppEtiquetado(CreateSqlLitePrinterApp(
         jornada: widget.jornada,
         idServiceOrder: int.parse(widget.idServiceOrder.toString()),
@@ -75,20 +62,25 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
     insertPrinterAppPendientes.estado = "etiquetado";
     dbPrinterApp.update(insertPrinterAppPendientes);
     //se setea nuevamente para obtener lista actualizada
-  }
+  }*/
 
   @override
   void initState() {
     super.initState();
-    getPendienteByID();
   }
 
   @override
   Widget build(BuildContext context) {
+    chasisController.text = widget.chassis;
+    String textoQr = widget.idPendientes.toString();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("ETIQUETADO"),
+        title: const Text(
+          "ETIQUETADO",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -97,35 +89,6 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
             BarcodeWidget(
               barcode: Barcode.qrCode(),
               data: textoQr,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                prefixIcon: Icon(
-                  Icons.qr_code,
-                  color: kColorAzul,
-                ),
-                labelText: 'QR',
-                labelStyle: TextStyle(
-                  color: kColorAzul,
-                  //fontSize: 20.0,
-                ),
-              ),
-              controller: qrController,
-              onChanged: (value) {
-                textoQr = value;
-                setState(() {});
-              },
-              style: TextStyle(
-                color: kColorAzul,
-                fontSize: 20.0,
-              ),
-              enabled: false,
             ),
             const SizedBox(
               height: 20,
@@ -155,81 +118,6 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
             const SizedBox(
               height: 20,
             ),
-            TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                prefixIcon: Icon(
-                  Icons.calendar_month,
-                  color: kColorAzul,
-                ),
-                labelText: 'Marca',
-                labelStyle: TextStyle(
-                  color: kColorAzul,
-                  //fontSize: 20.0,
-                ),
-              ),
-              controller: marcaController,
-              style: TextStyle(
-                color: kColorAzul,
-                fontSize: 20.0,
-              ),
-              enabled: false,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                prefixIcon: Icon(
-                  Icons.calendar_month,
-                  color: kColorAzul,
-                ),
-                labelText: 'Modelo',
-                labelStyle: TextStyle(
-                  color: kColorAzul,
-                  //fontSize: 20.0,
-                ),
-              ),
-              controller: modeloController,
-              style: TextStyle(
-                color: kColorAzul,
-                fontSize: 20.0,
-              ),
-              enabled: false,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                prefixIcon: Icon(
-                  Icons.calendar_month,
-                  color: kColorAzul,
-                ),
-                labelText: 'Detalle',
-                labelStyle: TextStyle(
-                  color: kColorAzul,
-                  //fontSize: 20.0,
-                ),
-              ),
-              controller: detalleController,
-              style: TextStyle(
-                color: kColorAzul,
-                fontSize: 20.0,
-              ),
-              enabled: false,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
             MaterialButton(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
@@ -238,23 +126,18 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
               height: 50.0,
               color: kColorNaranja,
               onPressed: () {
-                createPrinterAppEtiquetado();
+                //createPrinterAppEtiquetado();
                 Navigator.pop(context);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            PrintPage(insertPrinterAppPendientes.idVehiculo!)));
+                        builder: (context) => PrintPage(widget.idPendientes)));
                 /*     Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => QrRoroPDF(
                             idVehicle:
                                 insertPrinterAppPendientes.idVehiculo!))); */
-
-                setState(() {
-                  getPrinterAppPendientes;
-                });
               },
               child: const Text(
                 "ETIQUETAR",

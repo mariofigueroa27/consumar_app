@@ -2,6 +2,7 @@
 import 'package:consumar_app/models/Travel.dart';
 import 'package:consumar_app/models/ship.dart';
 import 'package:consumar_app/models/vehicle.dart';
+import 'package:consumar_app/src/roro/printer_app/etiquetado_page.dart';
 import 'package:consumar_app/src/roro/printer_app/reetiquetado_print_page.dart';
 //import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
 import 'package:flutter/material.dart';
@@ -24,25 +25,23 @@ class PrinterApp extends StatefulWidget {
 
   @override
   State<PrinterApp> createState() => _PrinterAppState();
-} 
+}
 
 late TabController _tabController;
 
 List<InsertPrinterAppPendientes> getPrinterAppPendientes = [];
 
-List<InsertPrinterAppPendientes> allDR = getPrinterAppPendientes;
+List<Vehicle> vehicleList = [];
 
-List<CreateSqlLitePrinterApp> createSqlLitePrinterApp = [];
+List<Vehicle> vehicleEtiquetadoList = [];
 
-List<CreateSqlLitePrinterApp> allDREtiqutado = createSqlLitePrinterApp;
+List<Vehicle> allDR = vehicleList;
+
+List<Vehicle> allDREtiqutado = vehicleEtiquetadoList;
 
 List<Ship> shipList = [];
 
 List<Travel> travelList = [];
-
-List<Vehicle> vehicleList = [];
-
-List<Vehicle> vehicleEtiquetadoList = [];
 
 String idShip = "";
 
@@ -199,108 +198,126 @@ class _PrinterAppState extends State<PrinterApp>
                   padding: const EdgeInsets.all(20),
                   child: Container(
                     child: Column(children: [
-                      Card(
-                          color: Colors.black,
+                      /*Card(
                           child: ListTile(
-                            leading: const Icon(Icons.search),
-                            title: TextField(
-                                controller: controllerSearchChasis,
-                                decoration: const InputDecoration(
-                                    hintText: 'Buscar Placas',
-                                    hintStyle: TextStyle(
-                                      color: Colors
-                                          .white, // Color medio gris para el texto de sugerencia
-                                    ),
-                                    border: InputBorder.none),
-                                onChanged: ((value) {
-                                  searchChassis(value);
-                                  searchChassisEtiquetado(value);
-                                })),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.cancel),
-                              onPressed: () {
-                                setState(() {
-                                  controllerSearchChasis.clear();
-                                  searchChassis;
-                                });
-                              },
-                            ),
-                          )),
+                        leading: const Icon(Icons.search),
+                        title: TextField(
+                            controller: controllerSearchChasis,
+                            decoration: const InputDecoration(
+                                hintText: 'Buscar Placas',
+                                border: InputBorder.none),
+                            onChanged: ((value) {
+                              searchChassis(value);
+                              searchChassisEtiquetado(value);
+                            })),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.cancel),
+                          onPressed: () {
+                            setState(() {
+                              controllerSearchChasis.clear();
+                              searchChassis;
+                            });
+                          },
+                        ),
+                      )),*/
                       const SizedBox(height: 20),
                       SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: DataTable(
+                            dividerThickness: 3,
+                            border: TableBorder.symmetric(
+                                inside: BorderSide(
+                                    width: 1, color: Colors.grey.shade200)),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: kColorAzul),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            headingTextStyle: TextStyle(
+                                fontWeight: FontWeight.bold, color: kColorAzul),
+                            dataRowColor: MaterialStateProperty.resolveWith(
+                                _getDataRowColor),
                             columns: const <DataColumn>[
                               DataColumn(
-                                label: Text(""),
+                                label: Text("Chassis"),
                               ),
                               DataColumn(
-                                label: Text(""),
+                                label: Text("Estado"),
                               ),
                             ],
                             rows: vehicleList
-                                .map(((e) => DataRow(
-                                        onLongPress: () {},
-                                        cells: <DataCell>[
-                                          DataCell(Text(e.chassis.toString(),
-                                              style: TextStyle(
-                                                  color: Colors.white))),
-                                          DataCell(
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                // Encuentra el vehículo seleccionado en la lista original
-                                                Vehicle selectedVehicle =
-                                                    vehicleList.firstWhere(
-                                                        (vehicle) =>
-                                                            vehicle.id == e.id);
-
-// Crea un nuevo objeto Vehicle con solo el ID y el chasis
-                                                Vehicle simplifiedVehicle =
-                                                    Vehicle(
-                                                        id: selectedVehicle.id,
-                                                        chassis: selectedVehicle
-                                                            .chassis,
-                                                        operation: '',
-                                                        tradeMark: '',
-                                                        detail: '',
-                                                        travelId: '',
-                                                        serviceOrderId: '');
-
-// Agrega este nuevo objeto a la lista vehicleEtiquetadoList
-                                                vehicleEtiquetadoList
-                                                    .add(simplifiedVehicle);
-
-                                                vehicleList.removeWhere(
+                                .map(((e) => DataRow(cells: <DataCell>[
+                                      DataCell(
+                                        Text(
+                                          e.chassis,
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                      //DataCell(Text(e.estado!)),
+                                      DataCell(
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EtiquetadoPrinterApp(
+                                                          jornada:
+                                                              widget.jornada,
+                                                          idUsuario:
+                                                              widget.idUsuario,
+                                                          idServiceOrder: widget
+                                                              .idServiceOrder,
+                                                          idPendientes:
+                                                              int.parse(e.id),
+                                                          chassis: e.chassis,
+                                                        )));
+                                            Vehicle selectedVehicle =
+                                                vehicleList.firstWhere(
                                                     (vehicle) =>
                                                         vehicle.id == e.id);
-                                                setState(() {
-                                                  vehicleList;
-                                                  vehicleEtiquetadoList;
-                                                });
-                                                // Aquí puedes manejar la acción de etiquetar
-                                              },
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all<
-                                                        Color>(kColorCeleste2),
-                                                shape: MaterialStateProperty
-                                                    .all<OutlinedBorder>(
-                                                  RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0), // Define el radio del borde
-                                                  ),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                'Etiquetar',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
+
+                                            Vehicle simplifiedVehicle = Vehicle(
+                                                id: selectedVehicle.id,
+                                                chassis:
+                                                    selectedVehicle.chassis,
+                                                operation: '',
+                                                tradeMark: '',
+                                                detail: '',
+                                                travelId: '',
+                                                serviceOrderId: '');
+
+                                            vehicleEtiquetadoList
+                                                .add(simplifiedVehicle);
+
+                                            vehicleList.removeWhere((vehicle) =>
+                                                vehicle.id == e.id);
+                                            setState(() {
+                                              vehicleList;
+                                              vehicleEtiquetadoList;
+                                            });
+                                            // Aquí puedes manejar la acción de etiquetar
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(kColorCeleste2),
+                                            shape: MaterialStateProperty.all<
+                                                OutlinedBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                    10.0), // Define el radio del borde
                                               ),
                                             ),
                                           ),
-                                        ])))
+                                          child: Text(
+                                            'Etiquetar',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ])))
                                 .toList(),
                           )),
                     ]),
@@ -314,7 +331,7 @@ class _PrinterAppState extends State<PrinterApp>
                     const SizedBox(
                       height: 20,
                     ),
-                    Card(
+                    /*Card(
                         child: ListTile(
                       leading: const Icon(Icons.search),
                       title: TextField(
@@ -335,7 +352,7 @@ class _PrinterAppState extends State<PrinterApp>
                           });
                         },
                       ),
-                    )),
+                    )),*/
                     const SizedBox(height: 20),
                     SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -493,7 +510,7 @@ class _PrinterAppState extends State<PrinterApp>
                         List<int> idList = vehicleEtiquetadoList
                             .map<int>((vehicle) => int.parse(vehicle.id))
                             .toList();
-
+                        print(idList.length);
                         await printerAppService.actualizarVehiculos(idList);
 
                         //cargarListaGeneralPrinterAppEtiquetados();
@@ -525,19 +542,6 @@ class _PrinterAppState extends State<PrinterApp>
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  getPrinterAppPendientes;
-                  createSqlLitePrinterApp;
-                });
-              },
-              backgroundColor: kColorNaranja,
-              child: const Icon(Icons.refresh),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
             FloatingActionButton(
               onPressed: () {
                 showDialog(
@@ -651,8 +655,8 @@ class _PrinterAppState extends State<PrinterApp>
   }
 
   void searchChassis(String query) {
-    final suggestion = getPrinterAppPendientes.where((drList) {
-      final listDR = drList.chasis!.toLowerCase();
+    final suggestion = vehicleList.where((drList) {
+      final listDR = drList.chassis.toLowerCase();
       final input = query.toLowerCase();
       return listDR.contains(input);
     }).toList();
@@ -665,8 +669,8 @@ class _PrinterAppState extends State<PrinterApp>
   }
 
   void searchChassisEtiquetado(String query) {
-    final suggestion = createSqlLitePrinterApp.where((drList) {
-      final listDR = drList.chasis!.toLowerCase();
+    final suggestion = vehicleEtiquetadoList.where((drList) {
+      final listDR = drList.chassis.toLowerCase();
       final input = query.toLowerCase();
       return listDR.contains(input);
     }).toList();

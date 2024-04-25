@@ -1,4 +1,4 @@
-import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
+import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
@@ -42,6 +42,7 @@ class _PrintPageState extends State<PrintPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('IMPRESION TICKETS'),
@@ -137,18 +138,18 @@ class _PrintPageState extends State<PrintPage> {
                             ),
                           ),
                           SizedBox(width: 5),
-                          Text(_progress ? _msjprogress : "Search"),
+                          Text(_progress ? _msjprogress : "Buscar"),
                         ],
                       ),
                     ),
                     ElevatedButton(
                       onPressed: connected ? this.disconnect : null,
-                      child: Text("Disconnect"),
+                      child: Text("Desconectar"),
                     ),
-                    ElevatedButton(
+                    /*ElevatedButton(
                       onPressed: connected ? this.printTest : null,
                       child: Text("Test"),
-                    ),
+                    ),*/
                   ],
                 ),
                 Container(
@@ -178,8 +179,9 @@ class _PrintPageState extends State<PrintPage> {
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     color: Colors.grey.withOpacity(0.3),
                   ),
-                  child: Column(children: [
-                    Text(
+                  child: Center(
+                    child:
+                        /*Text(
                         "Text size without the library without external packets, print images still it should not use a library"),
                     SizedBox(height: 10),
                     Row(
@@ -211,12 +213,19 @@ class _PrintPageState extends State<PrintPage> {
                           },
                         )
                       ],
+                    ),*/
+                        ElevatedButton(
+                      onPressed: connected ? this.printTest : null,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width *
+                            0.8, // 80% del ancho de la pantalla
+                        child: Text(
+                          "Imprimir", style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
-                    ElevatedButton(
-                      onPressed: connected ? this.printWithoutPackage : null,
-                      child: Text("Print"),
-                    ),
-                  ]),
+                  ),
                 ),
                 SizedBox(height: 10),
               ],
