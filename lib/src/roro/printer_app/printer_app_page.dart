@@ -323,7 +323,7 @@ class _PrinterAppState extends State<PrinterApp>
                                                                         .idServiceOrder,
                                                                 idPendientes:
                                                                     int.parse(
-                                                                        e.id!),
+                                                                        e.vehicleId!),
                                                                 chassis:
                                                                     e.chassis!,
                                                               )));
