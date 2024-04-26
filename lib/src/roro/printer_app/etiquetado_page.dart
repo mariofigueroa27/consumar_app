@@ -77,6 +77,12 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back,color: Colors.white,),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
         title: const Text(
           "ETIQUETADO",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),

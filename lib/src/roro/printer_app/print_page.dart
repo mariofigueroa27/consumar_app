@@ -46,6 +46,15 @@ class _PrintPageState extends State<PrintPage> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
           title: const Text('IMPRESION TICKETS'),
           actions: [
             PopupMenuButton(

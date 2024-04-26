@@ -1,11 +1,13 @@
 //import 'package:consumar_app/src/roro/autoreport/autoreport_list_page.dart';
 import 'package:consumar_app/models/Travel.dart';
+import 'package:consumar_app/models/service-order.dart';
 import 'package:consumar_app/models/ship.dart';
 import 'package:consumar_app/models/vehicle.dart';
 import 'package:consumar_app/src/roro/printer_app/etiquetado_page.dart';
 import 'package:consumar_app/src/roro/printer_app/reetiquetado_print_page.dart';
 //import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
 import 'package:flutter/material.dart';
+import '../../../models/operacion-roro.dart';
 import '../../../models/roro/printer_app/create_sql_lite_printer_app.dart';
 import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
 import '../../../services/roro/printer_app/printer_app_service.dart';
@@ -33,6 +35,8 @@ List<InsertPrinterAppPendientes> getPrinterAppPendientes = [];
 
 List<Vehicle> vehicleList = [];
 
+List<OperacionRoro> operacionList = [];
+
 List<Vehicle> vehicleEtiquetadoList = [];
 
 List<Vehicle> allDR = vehicleList;
@@ -41,11 +45,15 @@ List<Vehicle> allDREtiqutado = vehicleEtiquetadoList;
 
 List<Ship> shipList = [];
 
+List<ServiceOrder> serviceOrderList = [];
+
 List<Travel> travelList = [];
 
 String idShip = "";
 
 String idTravel = "";
+
+String idS0 = "";
 
 class _PrinterAppState extends State<PrinterApp>
     with SingleTickerProviderStateMixin {
@@ -56,6 +64,7 @@ class _PrinterAppState extends State<PrinterApp>
 
   PrinterAppService printerAppService = PrinterAppService();
 
+  ServiceOrder? _selectedS0;
   Ship? _selectedShip; // Variable para almacenar el barco seleccionado
   Travel? _selectedTravel; // Variable para almacenar el barco seleccionado
 
@@ -84,6 +93,15 @@ class _PrinterAppState extends State<PrinterApp>
   }
 
   //Obtener la lista en local de vehiculos sin etiquetar cargado previamente de la BD
+  cargarListaSO() async {
+    List<ServiceOrder> value = await printerAppService.getServiceOrder();
+
+    setState(() {
+      serviceOrderList = value;
+    });
+  }
+
+  //Obtener la lista en local de vehiculos sin etiquetar cargado previamente de la BD
   cargarListaViaje() async {
     List<Travel> value = await printerAppService.getTravels(idShip);
 
@@ -95,10 +113,10 @@ class _PrinterAppState extends State<PrinterApp>
 
   //Obtener la lista en local de vehiculos sin etiquetar cargado previamente de la BD
   cargarListVehiculos() async {
-    List<Vehicle> value = await printerAppService.getVehicles(idTravel);
+    List<OperacionRoro> value = await printerAppService.getVehiclesOperacion(idTravel,idS0);
 
     setState(() {
-      vehicleList = value;
+      operacionList = value;
     });
   }
 
@@ -109,6 +127,7 @@ class _PrinterAppState extends State<PrinterApp>
     // TODO: implement initState
     super.initState();
     cargarListaBarcos();
+    cargarListaSO();
   }
 
   @override
@@ -158,7 +177,7 @@ class _PrinterAppState extends State<PrinterApp>
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              vehicleList.length.toString(),
+                              operacionList.length.toString(),
                               style: TextStyle(color: Colors.black),
                             ),
                           )),
@@ -244,11 +263,11 @@ class _PrinterAppState extends State<PrinterApp>
                                 label: Text("Estado"),
                               ),
                             ],
-                            rows: vehicleList
+                            rows: operacionList
                                 .map(((e) => DataRow(cells: <DataCell>[
                                       DataCell(
                                         Text(
-                                          e.chassis,
+                                          e.chassis!,
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ),
@@ -268,18 +287,18 @@ class _PrinterAppState extends State<PrinterApp>
                                                           idServiceOrder: widget
                                                               .idServiceOrder,
                                                           idPendientes:
-                                                              int.parse(e.id),
-                                                          chassis: e.chassis,
+                                                              int.parse(e.id!),
+                                                          chassis: e.chassis!,
                                                         )));
-                                            Vehicle selectedVehicle =
-                                                vehicleList.firstWhere(
+                                            OperacionRoro selectedVehicle =
+                                                operacionList.firstWhere(
                                                     (vehicle) =>
                                                         vehicle.id == e.id);
 
                                             Vehicle simplifiedVehicle = Vehicle(
-                                                id: selectedVehicle.id,
+                                                id: selectedVehicle.vehicleId!,
                                                 chassis:
-                                                    selectedVehicle.chassis,
+                                                    selectedVehicle.chassis!,
                                                 operation: '',
                                                 tradeMark: '',
                                                 detail: '',
@@ -289,10 +308,10 @@ class _PrinterAppState extends State<PrinterApp>
                                             vehicleEtiquetadoList
                                                 .add(simplifiedVehicle);
 
-                                            vehicleList.removeWhere((vehicle) =>
+                                            operacionList.removeWhere((vehicle) =>
                                                 vehicle.id == e.id);
                                             setState(() {
-                                              vehicleList;
+                                              operacionList;
                                               vehicleEtiquetadoList;
                                             });
                                             // Aquí puedes manejar la acción de etiquetar
@@ -511,7 +530,7 @@ class _PrinterAppState extends State<PrinterApp>
                             .map<int>((vehicle) => int.parse(vehicle.id))
                             .toList();
                         print(idList.length);
-                        await printerAppService.actualizarVehiculos(idList);
+                        await printerAppService.actualizarVehiculos(idList,int.parse(idS0),int.parse(idTravel));
 
                         //cargarListaGeneralPrinterAppEtiquetados();
                         /*  await dbPrinterApp
@@ -520,6 +539,14 @@ class _PrinterAppState extends State<PrinterApp>
                           vehicleEtiquetadoList.clear();
                           idList.clear();
                         });
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                '¡La actualización se realizó correctamente!'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
                       },
                       child: const Text(
                         "CARGAR LISTA",
@@ -565,6 +592,29 @@ class _PrinterAppState extends State<PrinterApp>
                               children: [
                                 Text("Seleccione una opción:"),
                                 SizedBox(height: 10),
+                                DropdownButton<ServiceOrder>(
+                                  isExpanded: true,
+                                  hint: Text('Seleccione Orden Servicio'),
+                                  value: _selectedS0,
+                                  items:
+                                      serviceOrderList.map((ServiceOrder so) {
+                                    return DropdownMenuItem<ServiceOrder>(
+                                      value: so,
+                                      child: Text(so.serviceNumber!),
+                                    );
+                                  }).toList(),
+                                  onChanged: (ServiceOrder? newValue) async {
+                                    setState(() {
+                                      _selectedS0 = newValue;
+                                      idS0 = newValue!.id!;
+                                      print(idS0);
+                                    });
+
+                                    setState(() {});
+                                    // Cargamos la lista de viajes después de seleccionar un barco
+                                  },
+                                ),
+                                SizedBox(height: 10),
                                 DropdownButton<Ship>(
                                   isExpanded: true,
                                   hint: Text('Seleccione Nave'),
@@ -575,16 +625,16 @@ class _PrinterAppState extends State<PrinterApp>
                                       child: Text(ship.name),
                                     );
                                   }).toList(),
-                                  onChanged: (Ship? newValue) {
+                                  onChanged: (Ship? newValue) async {
                                     setState(() {
                                       _selectedShip = newValue;
                                       idShip = newValue!.id;
                                       print(idShip);
                                     });
+                                    await cargarListaViaje();
                                     // Llamamos a setState para forzar la reconstrucción del diálogo
                                     setState(() {});
                                     // Cargamos la lista de viajes después de seleccionar un barco
-                                    cargarListaViaje();
                                   },
                                 ),
                                 SizedBox(height: 10),

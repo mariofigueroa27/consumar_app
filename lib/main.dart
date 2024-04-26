@@ -1,4 +1,3 @@
-import 'package:consumar_app/src/roro/printer_app/printer_app_page.dart';
 import 'package:consumar_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
