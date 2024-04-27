@@ -25,10 +25,10 @@ class _PrintPageState extends State<PrintPage> {
     "update info"
   ];
 
-  String _selectSize = "2";
+  String _selectSize = "2"; 
   final _txtText = TextEditingController(text: "Hello developer");
   bool _progress = false;
-  String _msjprogress = "";
+  String _msjprogress = ""; 
 
   String optionprinttype = "58 mm";
   List<String> options = ["58 mm", "80 mm"];
